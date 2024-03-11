@@ -5,7 +5,6 @@
 
 import datetime
 
-
 def format_timedelta(timedelta, rounding='years'):
     """
     Returns a string of a nicely formatted time data
@@ -13,8 +12,32 @@ def format_timedelta(timedelta, rounding='years'):
     :param rounding: Round result to given value (months, weeks, days, hours, minutes, seconds)
     :return: formatted string
     """
-    return
+    if isinstance(timedelta, int) or isinstance(timedelta, float):
+        total_seconds = float(timedelta)
+    else:
+        total_seconds = timedelta.total_seconds()
 
+    periods = [
+        ('years', 60*60*24*365.25, int), 
+        ('months', 60*60*24*30.00, int),
+        ('weeks', 60*60*24*7.00, int),
+        ('days', 60*60*24.00, int),
+        ('hours', 60*60.00, int),
+        ('min', 60.00, int),
+        ('sec', 1.00, float)
+    ]
+
+    result = []
+    max_reached = False
+    for period_name, period_seconds, period_type in periods:
+        if rounding.startswith(period_name) or max_reached:
+            max_reached = True
+            period_value , total_seconds = divmod(total_seconds, period_seconds)
+            if period_value == 0:
+                continue
+            result.append("{} {}".format(period_type(period_value), period_name))
+
+    return " ".join(result)
 
 def run_tests():
     test_cases = [
