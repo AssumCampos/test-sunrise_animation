@@ -24,7 +24,8 @@ def format_timedelta(timedelta, rounding='years'):
         ('days', 60*60*24.00, int),
         ('hours', 60*60.00, int),
         ('min', 60.00, int),
-        ('sec', 1.00, float)
+        ('sec', 1.00, float),
+        ('milliseconds', 0.001, float)
     ]
 
     result = []
@@ -70,7 +71,7 @@ def run_tests():
         ("1 min 30.0 sec", "hours", 90),
         ("52.0 sec", "minutes", 52),
         ("90.0 sec", "seconds", 90),
-        # ("10.0 milliseconds", "seconds", .01),
+        ("10.0 milliseconds", "seconds", .01),
     ]
     all_results = []
     print("   | Match   | Result ")
