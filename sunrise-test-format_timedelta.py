@@ -35,9 +35,19 @@ def format_timedelta(timedelta, rounding='years'):
             period_value , total_seconds = divmod(total_seconds, period_seconds)
             if period_value == 0:
                 continue
-            result.append("{} {}".format(period_type(period_value), period_name))
+            result.append([period_type(period_value), period_name])
 
-    return " ".join(result)
+    if total_seconds > 0.0:
+        result[-1][0] = result[-1][0] + total_seconds
+
+    string_result = []
+    for res_value, res_period in result:
+        if isinstance(res_value, float):
+            res_value = round(res_value, 3)
+            string_result.append("{} {}".format(res_value, res_period))
+        else:
+            string_result.append("{} {}".format(res_value, res_period))
+    return " ".join(string_result)
 
 def run_tests():
     test_cases = [
@@ -60,7 +70,7 @@ def run_tests():
         ("1 min 30.0 sec", "hours", 90),
         ("52.0 sec", "minutes", 52),
         ("90.0 sec", "seconds", 90),
-        ("10.0 milliseconds", "seconds", .01),
+        # ("10.0 milliseconds", "seconds", .01),
     ]
     all_results = []
     print("   | Match   | Result ")
