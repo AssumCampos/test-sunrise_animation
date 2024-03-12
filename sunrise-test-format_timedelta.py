@@ -4,6 +4,7 @@
 """
 
 import datetime
+import math
 
 def format_timedelta(timedelta, rounding='years'):
     """
@@ -20,10 +21,10 @@ def format_timedelta(timedelta, rounding='years'):
     periods = [
         ('years', 60*60*24*365.00, int), 
         ('months', 60*60*24*30.00, int),
-        ('weeks', 60*60*24*7, int),
-        ('days', 60*60*24, int),
-        ('hours', 60*60, int),
-        ('min', 60, int),
+        ('weeks', 60*60*24*7.00, int),
+        ('days', 60*60*24.00, int),
+        ('hours', 60*60.00, int),
+        ('min', 60.00, int),
         ('sec', 1.00, float),
         ('milliseconds', 0.001, float)
     ]
@@ -35,17 +36,24 @@ def format_timedelta(timedelta, rounding='years'):
             max_reached = True
             period_value = total_seconds / period_seconds
             total_seconds = total_seconds % period_seconds 
-            if round(period_value) == 0 or period_type(period_value) ==0:
-                continue
-            result.append([period_type(period_value), period_name])
 
-    if total_seconds > 0.0:
-        result[-2][0] = result[-2][0] + total_seconds
+            if round(period_value) == 0 or period_type(period_value) == 0:
+                continue
+            if periods[-1][0] == period_name and result != []:
+                if round(period_type(total_seconds)) == 0:
+                    continue
+                result.append([period_type(total_seconds), period_name])
+            else:
+                result.append([period_type(period_value), period_name])
+
+    # if total_seconds > 0.0:
+    #     if len(result) >= 2:
+    #         result[-1][0] = result[-1][0] + total_seconds
 
     string_result = []
     for res_value, res_period in result:
         if isinstance(res_value, float):
-            res_value = round(res_value, 3)
+            res_value = round(res_value, 4)
             string_result.append("{} {}".format(res_value, res_period))
         else:
             string_result.append("{} {}".format(res_value, res_period))
