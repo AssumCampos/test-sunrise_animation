@@ -24,8 +24,8 @@ def format_timedelta(timedelta, rounding='years'):
         ('days', 60*60*24, int),
         ('hours', 60*60, int),
         ('min', 60, int),
-        ('sec', 1.00, float)
-        # ('milliseconds', 0.001, float)
+        ('sec', 1.00, float),
+        ('milliseconds', 0.001, float)
     ]
 
     result = []
@@ -40,7 +40,7 @@ def format_timedelta(timedelta, rounding='years'):
             result.append([period_type(period_value), period_name])
 
     if total_seconds > 0.0:
-        result[-1][0] = result[-1][0] + total_seconds
+        result[-2][0] = result[-2][0] + total_seconds
 
     string_result = []
     for res_value, res_period in result:
