@@ -18,14 +18,14 @@ def format_timedelta(timedelta, rounding='years'):
         total_seconds = timedelta.total_seconds()
 
     periods = [
-        ('years', 60*60*24*365.25, int), 
-        ('months', 60*60*24*30.44, int),
+        ('years', 60*60*24*365.00, int), 
+        ('months', 60*60*24*30.00, int),
         ('weeks', 60*60*24*7, int),
         ('days', 60*60*24, int),
         ('hours', 60*60, int),
         ('min', 60, int),
-        ('sec', 1.00, float), 
-        ('milliseconds', 0.001, float)
+        ('sec', 1.00, float)
+        # ('milliseconds', 0.001, float)
     ]
 
     result = []
@@ -33,10 +33,9 @@ def format_timedelta(timedelta, rounding='years'):
     for period_name, period_seconds, period_type in periods:
         if rounding.startswith(period_name) or max_reached:
             max_reached = True
-            # period_value , total_seconds = divmod(total_seconds, period_seconds)
             period_value = total_seconds / period_seconds
             total_seconds = total_seconds % period_seconds 
-            if round(period_value) == 0:
+            if round(period_value) == 0 or period_type(period_value) ==0:
                 continue
             result.append([period_type(period_value), period_name])
 
@@ -56,24 +55,24 @@ def run_tests():
     test_cases = [
         ("1 years 7 months 1 weeks 9 hours 29 min 26.538 sec", "years",
          datetime.timedelta(days=571, seconds=141, microseconds=1412551, milliseconds=1324125, minutes=125, hours=5, weeks=2)),
-        # ("2 days 2 hours", "years", datetime.timedelta(days=2, hours=2)),
-        # ("4 hours 12 min 5.16 sec", "years", 15125.16),
-        # ("1 min 30.0 sec", "years", 90),
-        # ("52.0 sec", "years", 52),
-        # ("5 years 2.2418 sec", "years", 157680002.24178),
+        ("2 days 2 hours", "years", datetime.timedelta(days=2, hours=2)),
+        ("4 hours 12 min 5.16 sec", "years", 15125.16),
+        ("1 min 30.0 sec", "years", 90),
+        ("52.0 sec", "years", 52),
+        ("5 years 2.2418 sec", "years", 157680002.24178),
         # test rounding
         ("19 months 1 weeks 9 hours 29 min 26.538 sec", "months",
          datetime.timedelta(days=571, seconds=141, microseconds=1412551, milliseconds=1324125, minutes=125, hours=5, weeks=2)),
         ("12 months 2 weeks 6 days 19 hours 5 min 4.0 sec", "months", datetime.timedelta(seconds=7897984, minutes=12, hours=9, weeks=42)),
-        # ("7 weeks 3 days 20 hours 49 min 42.75 sec", "weeks", 4567782.75),
-        # ("1 weeks", "weeks", 604800),
-        # ("49 days", "days", datetime.timedelta(weeks=7)),
-        # ("5 days", "days", datetime.timedelta(days=5)),
-        # ("4 hours 12 min 5.16 sec", "years", 15125.16),
-        # ("1 min 30.0 sec", "hours", 90),
-        # ("52.0 sec", "minutes", 52),
-        # ("90.0 sec", "seconds", 90),
-        # ("10.0 milliseconds", "seconds", .01),
+        ("7 weeks 3 days 20 hours 49 min 42.75 sec", "weeks", 4567782.75),
+        ("1 weeks", "weeks", 604800),
+        ("49 days", "days", datetime.timedelta(weeks=7)),
+        ("5 days", "days", datetime.timedelta(days=5)),
+        ("4 hours 12 min 5.16 sec", "years", 15125.16),
+        ("1 min 30.0 sec", "hours", 90),
+        ("52.0 sec", "minutes", 52),
+        ("90.0 sec", "seconds", 90),
+        ("10.0 milliseconds", "seconds", .01),
     ]
     all_results = []
     print("   | Match   | Result ")
