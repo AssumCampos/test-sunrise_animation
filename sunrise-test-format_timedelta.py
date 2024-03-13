@@ -6,19 +6,7 @@
 import datetime
 import math
 
-def format_timedelta(timedelta, rounding='years'):
-    """
-    Returns a string of a nicely formatted time data
-    :param timedelta: datetime.timedelta object or seconds as a float/int
-    :param rounding: Round result to given value (months, weeks, days, hours, minutes, seconds)
-    :return: formatted string
-    """
-    if isinstance(timedelta, int) or isinstance(timedelta, float):
-        total_seconds = float(timedelta)
-    else:
-        total_seconds = timedelta.total_seconds()
-
-    periods = [
+PERIODS = [
         ('years', 60*60*24*365.00, int), 
         ('months', 60*60*24*30.00, int),
         ('weeks', 60*60*24*7.00, int),
@@ -29,27 +17,39 @@ def format_timedelta(timedelta, rounding='years'):
         ('milliseconds', 0.001, float)
     ]
 
+def format_timedelta(timedelta, rounding='years'):
+    """
+    Returns a string of a nicely formatted time data
+    :param timedelta: datetime.timedelta object or seconds as a float/int
+    :param rounding: Round result to given value (months, weeks, days, hours, minutes, seconds)
+    :return: formatted string
+    """
     result = []
     max_reached = False
-    for period_name, period_seconds, period_type in periods:
-        if rounding.startswith(period_name) or max_reached:
+
+    # Check if timedelta is a datetime.timedelta object or seconds and get the seconds
+    if isinstance(timedelta, int) or isinstance(timedelta, float):
+        total_seconds = float(timedelta)
+    else:
+        total_seconds = timedelta.total_seconds()
+
+    # Iterate from all the periods 
+    for period_name, period_seconds, period_type in PERIODS:
+        if max_reached or rounding.startswith(period_name):
             max_reached = True
             period_value = total_seconds / period_seconds
             total_seconds = total_seconds % period_seconds 
 
             if round(period_value) == 0 or period_type(period_value) == 0:
                 continue
-            if periods[-1][0] == period_name and result != []:
+            if PERIODS[-1][0] == period_name and result != []:
                 if round(period_type(total_seconds)) == 0:
                     continue
                 result.append([period_type(total_seconds), period_name])
             else:
                 result.append([period_type(period_value), period_name])
 
-    # if total_seconds > 0.0:
-    #     if len(result) >= 2:
-    #         result[-1][0] = result[-1][0] + total_seconds
-
+    # Iterate results and check the type of period for the round
     string_result = []
     for res_value, res_period in result:
         if isinstance(res_value, float):
@@ -57,6 +57,7 @@ def format_timedelta(timedelta, rounding='years'):
             string_result.append("{} {}".format(res_value, res_period))
         else:
             string_result.append("{} {}".format(res_value, res_period))
+
     return " ".join(string_result)
 
 def run_tests():
