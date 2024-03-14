@@ -8,7 +8,7 @@ import math
 
 PERIODS = [
         ('years', 60*60*24*365.00, int), 
-        ('months', 60*60*24*30.00, int),
+        ('months', 2628000.0, int),
         ('weeks', 60*60*24*7.00, int),
         ('days', 60*60*24.00, int),
         ('hours', 60*60.00, int),
@@ -53,8 +53,9 @@ def format_timedelta(timedelta, rounding='years'):
     string_result = []
     for res_value, res_period in result:
         if isinstance(res_value, float):
-            res_value = round(res_value, 4)
-            string_result.append("{} {}".format(res_value, res_period))
+            # res_value = round(res_value, 4)
+            # string_result.append("{} {}".format(res_value, res_period))
+            string_result.append("{:.5} {}".format(res_value, res_period))
         else:
             string_result.append("{} {}".format(res_value, res_period))
 
