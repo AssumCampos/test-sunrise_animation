@@ -2,7 +2,7 @@
 1. Write the code for `format_timedelta()` so that the tests pass.
 2. Turn the `test_cases` into proper unit tests.
 """
-
+import unittest
 import datetime
 import math
 
@@ -102,5 +102,62 @@ def run_tests():
     else:
         print("Test failed!")
 
+class TestFormatTimeDelta(unittest.TestCase):
+    def test_deltatime_years(self):
+        self.assertEqual(
+            format_timedelta(datetime.timedelta(days=571, seconds=141, microseconds=1412551, milliseconds=1324125, minutes=125, hours=5, weeks=2), "years"),
+            "1 years 7 months 1 weeks 9 hours 29 min 26.538 sec")
 
+    def test_number_years(self):
+        self.assertEqual(
+            format_timedelta(157680002.24178, "years"),
+            "5 years 2.2418 sec")
+
+    def test_deltatime_months(self):
+        self.assertEqual(
+            format_timedelta(datetime.timedelta(days=571, seconds=141, microseconds=1412551, milliseconds=1324125, minutes=125, hours=5, weeks=2), "months"),
+            "19 months 1 weeks 9 hours 29 min 26.538 sec")
+
+    def test_number_months(self):
+        self.assertEqual(
+            format_timedelta(33332704.0, "months"),
+            "12 months 2 weeks 6 days 19 hours 5 min 4.0 sec")
+
+    def test_deltatime_days(self):
+        self.assertEqual(
+            format_timedelta(datetime.timedelta(weeks=7), "days"), 
+            "49 days")
+
+    def test_number_days(self):
+        self.assertEqual(
+            format_timedelta(432000.0, "days"), 
+            "5 days")
+
+    def test_deltatime_hours(self):
+        self.assertEqual(
+            format_timedelta(datetime.timedelta(hours=4, minutes=12, milliseconds=5160)), 
+            "4 hours 12 min 5.16 sec")
+
+    def test_number_hours(self):
+        self.assertEqual(
+            format_timedelta(15125.16), 
+            "4 hours 12 min 5.16 sec")
+
+    def test_number_minutes(self):
+        self.assertEqual(
+            format_timedelta(90, "hours"),
+            "1 min 30.0 sec")
+
+    def test_number_seconds(self):
+        self.assertEqual(
+            format_timedelta(90, "seconds"),
+            "90.0 sec")
+
+    def test_number_milliseconds(self):
+        self.assertEqual(
+            format_timedelta(.01, "seconds"),
+            "10.0 milliseconds")
+
+unittest.main()
 run_tests()
+
